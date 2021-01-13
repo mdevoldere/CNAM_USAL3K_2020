@@ -33,10 +33,14 @@ BEFORE INSERT ON clients
 FOR EACH ROW  
 BEGIN 
 
-    IF ets_id IS NOT NULL AND particulier_id IS NOT NULL 
+    IF NEW.ets_id IS NOT NULL AND NEW.particulier_id IS NOT NULL 
     THEN
 		SIGNAL SQLSTATE '45000' 
         SET MESSAGE_TEXT = 'Un client ne pas pas etre rattaché à un foyer et à une entreprise en même temps';
+    ELSE IF NEW.ets_id IS NULL AND NEW.particulier_id IS NULL
+    THEN
+		SIGNAL SQLSTATE '45000' 
+        SET MESSAGE_TEXT = 'Un client doit être rattaché à un foyer ou à une entreprise';
     END IF;  
 
 END $$
