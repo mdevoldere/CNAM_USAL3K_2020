@@ -1,6 +1,6 @@
 USE usal3k_bank;
 
-DELIMITER $$
+DELIMITER $$ 
 
 CREATE trigger log_transactions 
 AFTER UPDATE 
