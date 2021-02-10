@@ -42,6 +42,8 @@ CREATE TABLE transaction_history
 	PROCEDURE STOCKEE : Transférer un montant vers d'un compte existant vers un autre compte existant
 */
 
+DROP PROCEDURE IF EXISTS bank_transfer; 
+
 DELIMITER $$ 
 
 CREATE PROCEDURE bank_transfer
@@ -54,11 +56,11 @@ BEGIN
 	DECLARE new_balance INT;
 	DECLARE account_exists INT;
     
-    
 	START TRANSACTION;
     
     IF account_from = account_to /* si les 2 identifiants de comptes sont identiques, c'est un simple crédit. */
     THEN
+    
 		SELECT COUNT(*) INTO account_exists FROM bank_accounts WHERE id = account_from;
         
         IF account_exists <> 1 /* si le compte n'existe pas */ 
@@ -69,7 +71,9 @@ BEGIN
 			UPDATE bank_accounts SET balance=balance+amount WHERE id = account_from;
 			COMMIT;
         END IF;
-    ELSE
+        
+    ELSE /* Si les 2 identifiants sont différents, c'est un virement entre comptes */
+    
 		SELECT COUNT(*) INTO account_exists FROM bank_accounts WHERE id IN(account_from, account_to); 
 		
 		IF account_exists <> 2 /* si au moins 1 des 2 comptes n'existe pas, on lève une exception */
@@ -88,20 +92,18 @@ BEGIN
 			UPDATE bank_accounts SET balance=balance+amount WHERE id=account_to;
 			COMMIT;
 		END IF;
-    END IF;
-    
         
-    
-
+    END IF;
 END $$
 
-DELIMITER ;
+DELIMITER ; /* fin procédure bank_transfer */
 
 
 /*
 	DECLENCHEUR : Sauvegarder chaque débit/crédit dans l'historique
 */
 
+DROP trigger IF EXISTS log_transactions;
 
 DELIMITER $$ 
 
@@ -131,7 +133,32 @@ BEGIN
     END IF;
 END $$
 
+DELIMITER ; /* fin trigger log_transactions  */
 
+DELIMITER $$
+
+/*
+	DECLENCHEUR : Vérifier la derniere transaction  (vérifie si un crédit est associé à un débit.)
+*/
+CREATE TRIGGER check_transactions
+BEFORE INSERT 
+ON transaction_history 
+FOR EACH ROW 
+BEGIN 
+	DECLARE latest_type CHAR(1);
+    
+    SELECT t_type INTO latest_type FROM transaction_history ORDER BY t_id DESC LIMIT 1;
+    
+    IF NEW.t_type = 'C' 
+    THEN 
+		IF latest_type <> 'D'
+        THEN 
+			SET NEW.t_type = 'R';
+        END IF;
+    END IF;
+END $$
+
+DELIMITER ; /* fin trigger check_transactions  */
 
 /*
 	INSERTION DES DONNEES DANS LES TABLES
@@ -165,12 +192,13 @@ VALUES
 	AJOUT DE QUELQUES TRANSACTIONS 
 */
 
-CALL bank_transfer(1000, 1, 2);
+CALL bank_transfer(1500, 1, 2);
 CALL bank_transfer(2000, 1, 3);
 CALL bank_transfer(3000, 1, 4);
 CALL bank_transfer(4000, 2, 5);
 CALL bank_transfer(5000, 2, 6);
 CALL bank_transfer(500, 2, 7);
+CALL bank_transfer(10000, 3, 3);
 CALL bank_transfer(1000, 3, 8);
 CALL bank_transfer(1500, 3, 9);
 CALL bank_transfer(2000, 3, 1);
@@ -178,18 +206,20 @@ CALL bank_transfer(1000, 4, 2);
 CALL bank_transfer(50, 4, 3);
 CALL bank_transfer(150, 4, 1);
 CALL bank_transfer(250, 5, 9);
+CALL bank_transfer(10000, 1, 1);
 CALL bank_transfer(350, 5, 6);
 CALL bank_transfer(450, 5, 7);
 CALL bank_transfer(800, 6, 8);
 CALL bank_transfer(700, 6, 9);
 CALL bank_transfer(600, 6, 1);
+CALL bank_transfer(10000, 2, 2);
 CALL bank_transfer(500, 7, 2);
-CALL bank_transfer(100, 7, 3);
+CALL bank_transfer(950, 7, 3);
 CALL bank_transfer(150, 8, 4);
-CALL bank_transfer(150, 8, 5);
+CALL bank_transfer(3500, 8, 5);
 CALL bank_transfer(100, 9, 6);
-CALL bank_transfer(50, 9, 7);
-
+CALL bank_transfer(7300, 9, 7);
+CALL bank_transfer(10000, 4, 4);
 
 /*
 	AFFICHAGE DES DONNES DES TABLES 
