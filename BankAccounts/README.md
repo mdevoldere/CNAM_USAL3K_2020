@@ -50,10 +50,8 @@ Chaque transaction entre les comptes bancaires et enregistrée dans un journal (
 2. Créer un script SQL "BankAccounts_v2_UPDATE.sql"
     - Vous y ajouterez votre code SQL
 3. Ajouter la gestion des prélèvements
-    - Créer la ou les tables nécessaires
     - Créer les procédures stockées et déclencheurs nécessaires
 4. Ajouter la gestion des prélèvements
-    - Créer la ou les tables nécessaires
     - Créer les procédures stockées et déclencheurs nécessaires
 5. Ajouter la gestion des prêts
     - Modifiez le MCD
