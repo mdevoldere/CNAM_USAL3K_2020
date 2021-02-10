@@ -3,24 +3,9 @@ USE usal3K_bank;
 SELECT * FROM bank_accounts;
 SELECT * FROM transaction_history;
 
-/*LOCK TABLES 
-	bank_accounts AS lck_accounts WRITE,
-	transaction_history AS lck_transactions WRITE;*/
-
-CALL bank_transfer(100, 1, 2);
-CALL bank_transfer(50, 2, 3);
-CALL bank_transfer(20, 2, 5);
-CALL bank_transfer(45, 3, 2);
-CALL bank_transfer(25, 5, 3);
-
-/*UNLOCK TABLES;*/
-
-SELECT * FROM bank_accounts;
-SELECT * FROM transaction_history;
-
 
 SELECT t_account_id, SUM(t_amount) FROM transaction_history
-WHERE t_type='credit'
+WHERE t_type='C'
 GROUP BY t_account_id;
 
 

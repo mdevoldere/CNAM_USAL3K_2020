@@ -1,3 +1,5 @@
+
+
 CREATE TABLE teams(
    t_id INT,
    t_name VARCHAR(50) NOT NULL,
