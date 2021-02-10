@@ -53,26 +53,45 @@ CREATE PROCEDURE bank_transfer
 BEGIN
 	DECLARE new_balance INT;
 	DECLARE account_exists INT;
-	START TRANSACTION;
-        
-    SELECT COUNT(*) INTO account_exists FROM bank_accounts WHERE id IN(account_from, account_to); 
-	
-    IF account_exists <> 2 /* si au moins 1 des 2 comptes n'existe pas, on lève une exception */
-    THEN
-		SIGNAL SQLSTATE '45000' 
-        SET MESSAGE_TEXT = 'La transaction est impossible !';
-    END IF;
-
-	UPDATE bank_accounts SET balance=balance-amount WHERE id=account_from; 
-    SELECT balance INTO new_balance FROM bank_accounts WHERE id=account_from;
     
-    IF new_balance < 0 /* si le virement amène le solde du compte débiteur sous 0, on annule la transaction sans générer d'erreur */
-    THEN 
-		ROLLBACK;
-	ELSE /* sinon, on poursuit et on crédite le compte destinataire */
-		UPDATE bank_accounts SET balance=balance+amount WHERE id=account_to;
-        COMMIT;
+    
+	START TRANSACTION;
+    
+    IF account_from = account_to /* si les 2 identifiants de comptes sont identiques, c'est un simple crédit. */
+    THEN
+		SELECT COUNT(*) INTO account_exists FROM bank_accounts WHERE id = account_from;
+        
+        IF account_exists <> 1 /* si le compte n'existe pas */ 
+        THEN
+			SIGNAL SQLSTATE '45000' 
+			SET MESSAGE_TEXT = 'La transaction est impossible !';
+        ELSE
+			UPDATE bank_accounts SET balance=balance+amount WHERE id = account_from;
+			COMMIT;
+        END IF;
+    ELSE
+		SELECT COUNT(*) INTO account_exists FROM bank_accounts WHERE id IN(account_from, account_to); 
+		
+		IF account_exists <> 2 /* si au moins 1 des 2 comptes n'existe pas, on lève une exception */
+		THEN
+			SIGNAL SQLSTATE '45000' 
+			SET MESSAGE_TEXT = 'La transaction est impossible !';
+		END IF;
+
+		UPDATE bank_accounts SET balance=balance-amount WHERE id=account_from; 
+		SELECT balance INTO new_balance FROM bank_accounts WHERE id=account_from;
+		
+		IF new_balance < 0 /* si le virement amène le solde du compte débiteur sous 0, on annule la transaction sans générer d'erreur */
+		THEN 
+			ROLLBACK;
+		ELSE /* sinon, on poursuit et on crédite le compte destinataire */
+			UPDATE bank_accounts SET balance=balance+amount WHERE id=account_to;
+			COMMIT;
+		END IF;
     END IF;
+    
+        
+    
 
 END $$
 

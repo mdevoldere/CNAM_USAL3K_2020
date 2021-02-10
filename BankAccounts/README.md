@@ -49,6 +49,7 @@ Chaque transaction entre les comptes bancaires et enregistrée dans un journal (
         - des diagrammes conceptuels et logiques associés
 2. Créer un script SQL "BankAccounts_v2_UPDATE.sql"
     - Vous y ajouterez votre code SQL
+    - Votre script ne doit pas compromettre les données existantes
 3. Ajouter la gestion des prélèvements
     - Créer les procédures stockées et déclencheurs nécessaires
 4. Ajouter la gestion des prélèvements
