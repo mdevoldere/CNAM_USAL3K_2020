@@ -5,9 +5,20 @@ Objectif : Analyser un système existant et le faire évoluer selon un cahier de
 ## Contexte actuel 
 
 Le système actuel référence des banques et les comptes bancaires associés.
+
 Un compte bancaire ne peut pas voir son solde descendre sous 0 (aucun découvert autorisé).
+
 Le système permet le transfert de fonds entre les différents comptes bancaires enregistrés.
+
 Chaque transaction entre les comptes bancaires et enregistrée dans un journal (transaction_history).
+
+
+### État du système actuel 
+
+![MCD](BankAccounts_v1_MCD.png)
+
+
+![MCD](BankAccounts_v1_MLD.png)
 
 
 ## Modifications à apporter 
