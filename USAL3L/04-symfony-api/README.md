@@ -78,10 +78,12 @@ Si vous souhaitez supprimer la base de données :
 
 Pour générer le fichier de migration: 
 > php bin/console make:migration
+
 Ceci gènère un fichier qui permettra de mettre à jour la base de données (création, mise à jour des tables)
 
 Puis appliquer la migration 
 > php bin/console doctrine:migrations:migrate
+
 Ceci applique les modifications dans la base de données (les requêtes SQL sont exécutées)
 
 
@@ -99,7 +101,9 @@ Relancer le serveur et rendez-vous sur localhost:3000/api.
 ## config/packages/api-platform
 Ajouter un titre, une description et une version à votre API :
 
-Dans le fichier config/packages/api-platformSous l'élement api_platform: 
+Dans le fichier config/packages/api-platform
+
+Sous l'élement api_platform: 
 
     api_platform:
         title: 'MD REST API'
