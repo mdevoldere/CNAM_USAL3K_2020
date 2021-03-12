@@ -19,6 +19,22 @@ class PokemonRepository extends ServiceEntityRepository
         parent::__construct($registry, Pokemon::class);
     }
 
+    /**
+     * @todo DEBUG ME
+     */
+    public function findRandon()
+    {
+        //$sql = "SELECT * FROM pokemon ORDER BY RAND() LIMIT 1;";
+
+        $query = $this->createQueryBuilder('p');
+
+        $query->orderBy('RAND()');
+
+        $query->setMaxResults(1);
+
+        return $query->getQuery()->getResult();
+    }
+
     // /**
     //  * @return Pokemon[] Returns an array of Pokemon objects
     //  */

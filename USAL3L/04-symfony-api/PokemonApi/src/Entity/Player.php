@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PlayerRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -28,6 +30,16 @@ class Player
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $email;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Pokemon::class)
+     */
+    private $pokemons;
+
+    public function __construct()
+    {
+        $this->pokemons = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -55,6 +67,30 @@ class Player
     public function setEmail(?string $email): self
     {
         $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Pokemon[]
+     */
+    public function getPokemons(): Collection
+    {
+        return $this->pokemons;
+    }
+
+    public function addPokemon(Pokemon $pokemon): self
+    {
+        if (!$this->pokemons->contains($pokemon)) {
+            $this->pokemons[] = $pokemon;
+        }
+
+        return $this;
+    }
+
+    public function removePokemon(Pokemon $pokemon): self
+    {
+        $this->pokemons->removeElement($pokemon);
 
         return $this;
     }
