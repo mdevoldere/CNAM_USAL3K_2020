@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Pokemon;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -20,19 +21,23 @@ class PokemonRepository extends ServiceEntityRepository
     }
 
     /**
-     * @todo DEBUG ME
+     * @todo EXPLAIN
      */
     public function findRandon()
     {
-        //$sql = "SELECT * FROM pokemon ORDER BY RAND() LIMIT 1;";
+        $query = "SELECT * FROM pokemon ORDER BY RAND() LIMIT 1";
 
-        $query = $this->createQueryBuilder('p');
+        $query = $this->getEntityManager()->createNativeQuery($query, new ResultSetMapping());
+
+        return $query->getResult();
+
+        /*$query = $this->createQueryBuilder('p');
 
         $query->orderBy('RAND()');
 
         $query->setMaxResults(1);
 
-        return $query->getQuery()->getResult();
+        return $query->getQuery()->getResult();*/
     }
 
     // /**
