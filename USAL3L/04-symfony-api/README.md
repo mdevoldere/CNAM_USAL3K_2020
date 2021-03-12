@@ -110,5 +110,12 @@ Dans le fichier config/packages/api-platformSous l'élement api_platform:
 
 
 # Quelques liens :
+
+https://blog.nicolashachet.com/developpement-php/larchitecture-rest-expliquee-en-5-regles/
+
 https://api-platform.com/
+
 https://www.kaherecode.com/tutorial/developper-une-api-rest-avec-symfony-et-api-platform
+
+https://www.kaherecode.com/tutorial/developper-une-api-rest-avec-symfony-et-api-platform-les-relations-entre-entites
+
