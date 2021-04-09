@@ -27,7 +27,7 @@ Toutes les commandes suivantes doivent être saisies dans ce répertoire.
 composer require symfony/string
 composer require symfony/maker-bundle --dev
 composer require api       
-composer require symfony/migrations 
+composer require migrations 
 ```
 
 ## Lancer / Arrêter le serveur PHP interne 
