@@ -26,7 +26,7 @@ Toutes les commandes suivantes doivent être saisies dans ce répertoire.
 ```
 composer require symfony/string
 composer require symfony/maker-bundle --dev
-composer require symfony/api       
+composer require api       
 composer require symfony/migrations 
 ```
 
